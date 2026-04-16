@@ -72,21 +72,24 @@ The script will:
 
 ## Localtunnel landing page
 
-When a localtunnel URL is opened in a **browser** for the first time, it shows a warning page asking you to enter your public IP address before it lets you through. API clients (e.g. PowerPoint add-ins) cannot do this interactively and will appear to hang.
+When a localtunnel URL is first visited it shows a *"Tunnel Website Ahead"* warning page. Visitors must enter their public IP address to proceed. API clients (e.g. PowerPoint add-ins) cannot do this interactively and will stall.
 
-**Fix:** add the following header to every request:
+### For API clients / add-ins
 
-```
-bypass-tunnel-reminder: true
-```
-
-Most HTTP clients and add-in configuration dialogs have a "custom headers" field where you can set this. Once the header is present, the landing page is skipped and requests go straight to the LiteLLM proxy.
-
-For a quick browser test you can also visit:
+Add the following header to every request and the landing page is skipped entirely:
 
 ```
-https://<your-tunnel-url>/?bypass-tunnel-reminder=true
+Bypass-Tunnel-Reminder: true
 ```
+
+Most add-in configuration dialogs have a *Custom headers* field where you can set this.
+
+### For browser access
+
+1. Go to `https://loca.lt/mytunnelpassword` — it returns your current public IP address as plain text.
+2. Open the tunnel URL in your browser; when the warning page appears, paste that IP into the field and click **Submit**.
+
+> Note: a URL query-parameter bypass (e.g. `?bypass-tunnel-reminder=true`) does **not** exist yet — it is an open feature request ([localtunnel/localtunnel#727](https://github.com/localtunnel/localtunnel/issues/727)).
 
 ## Configuration
 
