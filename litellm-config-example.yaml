@@ -1,0 +1,10 @@
+model_list:
+  - model_name: anthropic.claude-opus-4-6-v1 # Name the add-in expects
+    litellm_params:
+      model: bedrock/global.anthropic.claude-opus-4-6-v1  # The Global Bedrock ID
+      api_key: "xxxxxxxxxxxxxxxxxxxxx=" # Paste your Bedrock API key here
+      aws_region_name: us-east-1 # Ensure this matches your Bedrock region
+
+general_settings:
+  master_key: sk-1234 # This will be your "API token" in PowerPoint
+
