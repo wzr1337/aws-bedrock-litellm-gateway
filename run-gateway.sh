@@ -23,10 +23,19 @@ LITELLM_PID=$!
 sleep 3
 
 echo "--- Starting Localtunnel ---"
-# Start localtunnel and pipe to stdout
 npx localtunnel --port $PORT &
 LT_PID=$!
 
-# Keep the script running to capture output
+# Give localtunnel a moment to connect, then print bypass info
+sleep 2
+BYPASS_IP=$(curl -s https://loca.lt/mytunnelpassword)
+echo ""
+echo "-----------------------------------------------------------"
+echo "  Browser access:  enter IP '$BYPASS_IP' when prompted"
+echo "  API / add-in:    set header 'Bypass-Tunnel-Reminder: true'"
+echo "-----------------------------------------------------------"
+echo ""
+
+# Keep the script running
 wait
 
