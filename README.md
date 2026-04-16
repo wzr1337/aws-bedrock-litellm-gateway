@@ -1,4 +1,4 @@
-# LiteLLM Gateway
+# AWS Bedrock LiteLLM Gateway
 
 A lightweight LiteLLM proxy gateway that exposes AWS Bedrock models (Claude) via an OpenAI-compatible API, with optional public access via [Localtunnel](https://localtunnel.github.io/www/).
 
@@ -15,6 +15,37 @@ A lightweight LiteLLM proxy gateway that exposes AWS Bedrock models (Claude) via
 - AWS credentials with Bedrock access
 - LiteLLM installed: `pip install -r requirements.txt`
 
+## AWS Credentials
+
+AWS Bedrock lets you generate long-term API keys directly from the Bedrock console — no IAM user setup required.
+
+### 1. Generate a Bedrock API key
+
+1. Open the [Amazon Bedrock console](https://console.aws.amazon.com/bedrock/) and select your region.
+2. In the left sidebar, go to **API keys** (under *Settings*).
+3. Click **Create API key**, give it a name, and confirm.
+4. Copy the key immediately — it is only shown once.
+
+### 2. Enable model access
+
+AWS requires explicit opt-in per model:
+
+1. In the Bedrock console, go to **Model access** (left sidebar).
+2. Enable the Claude model you want (e.g. *Claude Opus 4.6*).
+
+### 3. Put the key in the config
+
+Open `litellm-config.yaml` and paste the key into the `api_key` field:
+
+```yaml
+litellm_params:
+  model: bedrock/global.anthropic.claude-opus-4-6-v1
+  api_key: "xxxxxxxxxxxxxxxxxxxxx="   # ← your Bedrock API key
+  aws_region_name: us-east-1         # ← region where model access is enabled
+```
+
+> **Security note:** never commit `litellm-config.yaml` to version control. Only `litellm-config-example.yaml` (with placeholder values) should be committed.
+
 ## Setup
 
 1. Copy the example config and fill in your credentials:
@@ -23,10 +54,10 @@ A lightweight LiteLLM proxy gateway that exposes AWS Bedrock models (Claude) via
    cp litellm-config-example.yaml litellm-config.yaml
    ```
 
-2. Edit `litellm-config.yaml`:
-   - Replace `api_key` with your Bedrock API key
-   - Set `aws_region_name` to your Bedrock region
-   - Set a strong `master_key` (this is the API token clients must use)
+2. Edit `litellm-config.yaml` following the [AWS Credentials](#aws-credentials) section above:
+   - Set `api_key` to your Bedrock API key
+   - Set `aws_region_name` to the region where you enabled model access
+   - Set a strong `master_key` (this is the Bearer token clients must send)
 
 ## Running
 
@@ -45,7 +76,7 @@ The script will:
 |---|---|
 | `model_name` | The model alias clients use in their requests |
 | `litellm_params.model` | The actual Bedrock model ID |
-| `litellm_params.api_key` | Your Bedrock API key |
+| `litellm_params.api_key` | Your Bedrock API key (generated in the Bedrock console) |
 | `litellm_params.aws_region_name` | AWS region for Bedrock |
 | `general_settings.master_key` | Bearer token clients must send as `Authorization` |
 
