@@ -70,6 +70,24 @@ The script will:
 2. Start localtunnel and print the public URL to stdout
 3. Shut both down cleanly on `Ctrl+C`
 
+## Localtunnel landing page
+
+When a localtunnel URL is opened in a **browser** for the first time, it shows a warning page asking you to enter your public IP address before it lets you through. API clients (e.g. PowerPoint add-ins) cannot do this interactively and will appear to hang.
+
+**Fix:** add the following header to every request:
+
+```
+bypass-tunnel-reminder: true
+```
+
+Most HTTP clients and add-in configuration dialogs have a "custom headers" field where you can set this. Once the header is present, the landing page is skipped and requests go straight to the LiteLLM proxy.
+
+For a quick browser test you can also visit:
+
+```
+https://<your-tunnel-url>/?bypass-tunnel-reminder=true
+```
+
 ## Configuration
 
 | Field | Description |
